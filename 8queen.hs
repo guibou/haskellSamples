@@ -1,6 +1,9 @@
-main :: IO ()
-main = print $ length (queens 8)
+import System.Environment
 
+main :: IO ()
+main = do
+  n <- (read . head) <$> getArgs
+  print $ length (queens n)
 
 queens :: Int -> [[Int]]
 queens n = filter test (generate n)
