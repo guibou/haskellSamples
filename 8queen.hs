@@ -6,10 +6,10 @@ main = do
   print $ length (queens n)
 
 generate :: Int -> [[Int]]
-generate n = generate' n
+generate n = generate' [1..n]
     where
-      generate' 0 = [[]]
-      generate' k = [q : qs | q <- [1..n], qs <- generate' (k-1)]
+      generate' [] = [[]]
+      generate' k = [q : qs | q <- k, qs <- generate' (filter (/=q) k)]
 
 sameDiag :: Int -> [Int] -> Bool
 sameDiag try qs = any (\(colDist,q) -> abs (try - q) == colDist) $ zip [1..] qs
@@ -18,7 +18,7 @@ queens :: Int -> [[Int]]
 queens n = filter test (generate n)
     where test []         = True
           test (q:qs)     = isSafe q qs && test qs
-          isSafe   try qs = not (try `elem` qs || sameDiag try qs)
+          isSafe   try qs = not (sameDiag try qs)
 
 {-
 Times:
@@ -29,8 +29,11 @@ n res t
 3 0   0.001
 4 2   0.001
 5 10  0.001
-6 4   0.007
-7 40  0.1
-8 92  2.554
-9 ----------> Unknown (stoped after 2 minutes and 10 Gb of ram)
+6 4   0.001
+7 40  0.004
+8 92  0.022
+9 352 0.195
+10 724 2.042
+11 2680 24.063
+12 --> killed after 2 minutes (but no ram excess)
 -}
