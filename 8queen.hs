@@ -1,4 +1,5 @@
 import System.Environment
+import Data.List (permutations)
 
 main :: IO ()
 main = do
@@ -6,10 +7,7 @@ main = do
   print $ length (queens n)
 
 generate :: Int -> [[Int]]
-generate n = generate' [1..n]
-    where
-      generate' [] = [[]]
-      generate' k = [q : qs | q <- k, qs <- generate' (filter (/=q) k)]
+generate n = permutations [1..n]
 
 sameDiag :: Int -> [Int] -> Bool
 sameDiag try qs = any (\(colDist,q) -> abs (try - q) == colDist) $ zip [1..] qs
@@ -30,10 +28,10 @@ n res t
 4 2   0.001
 5 10  0.001
 6 4   0.001
-7 40  0.004
-8 92  0.022
-9 352 0.195
-10 724 2.042
-11 2680 24.063
+7 40  0.002
+8 92  0.014
+9 352 0.116
+10 724 1.267
+11 2680 14.413
 12 --> killed after 2 minutes (but no ram excess)
 -}
