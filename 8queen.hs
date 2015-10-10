@@ -5,14 +5,20 @@ main = do
   n <- (read . head) <$> getArgs
   print $ length (queens n)
 
+generate :: Int -> [[Int]]
+generate n = generate' n
+    where
+      generate' 0 = [[]]
+      generate' k = [q : qs | q <- [1..n], qs <- generate' (k-1)]
+
+sameDiag :: Int -> [Int] -> Bool
+sameDiag try qs = any (\(colDist,q) -> abs (try - q) == colDist) $ zip [1..] qs
+
 queens :: Int -> [[Int]]
 queens n = filter test (generate n)
-    where generate 0      = [[]]
-          generate k      = [q : qs | q <- [1..n], qs <- generate (k-1)]
-          test []         = True
+    where test []         = True
           test (q:qs)     = isSafe q qs && test qs
           isSafe   try qs = not (try `elem` qs || sameDiag try qs)
-          sameDiag try qs = any (\(colDist,q) -> abs (try - q) == colDist) $ zip [1..] qs
 
 {-
 Times:
